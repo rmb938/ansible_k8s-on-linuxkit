@@ -1,0 +1,51 @@
+- name: CHECKING IF NODE HAS CONFIGURATION
+  stat:
+    path: /var/lib/kubelet/config.yaml
+  register: kubelet_config
+
+- name: UPLOAD KUBEADM CERTS FOR CONTROL PLANE
+  command: "/usr/local/bin/kubeadm init phase upload-certs --upload-certs"
+  no_log: true
+  delegate_to: "{{ groups['init-master'][0] }}"
+  register: kubeadm_certs
+  when: kubeadm_role == "control-plane"
+
+- name: CREATE TOKEN FOR NODE TO JOIN CLUSTER
+  command: "/usr/local/bin/kubeadm token create --ttl 30m"
+  no_log: true
+  delegate_to: "{{ groups['init-master'][0] }}"
+  register: kubeadm_token
+  when: kubeadm_role == "control-plane" or kubeadm_role == "worker"
+
+- name: PLACING KUBEADM CONFIGURATION
+  template: 
+    src: "kubeadm-{{ kubeadm_role }}.yaml"
+    dest: /run/kubeadm.yaml
+    owner: root
+    group: root
+    mode: '0600'
+  when: not kubelet_config.stat.exists
+
+- name: TELLING KUBEADM TO RUN
+  copy:
+    content: ""
+    dest: /run/kubeadm-run
+    force: no
+    owner: root
+    group: root
+    mode: '0600'
+  when: not kubelet_config.stat.exists
+
+- name: WAITING FOR KUBEADM TO FINISH
+  wait_for: 
+    path: /hostroot/var/log/kubeadm.out.log
+    search_regex: "kubeadm has completed"
+    msg: kubeadm didn't finish there may be errors in it's logs
+  when: not kubelet_config.stat.exists
+
+- name: REMOVING KUBE-PROXY DAEMONSET
+  command: "/usr/local/bin/kubectl delete daemonset -n kube-system kube-proxy"
+  when: kubeadm_role == "init"
+  register: kubeproxy
+  changed_when: '"deleted" in kubeproxy.stdout'
+  failed_when: '"NotFound" not in kubeproxy.stderr and kubeproxy.stderr|length > 0'

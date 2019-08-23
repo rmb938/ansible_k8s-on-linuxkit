@@ -1,0 +1,21 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+nodeRegistration:
+  name: {{ inventory_hostname }}
+bootstrapTokens:
+  - ttl: 1s
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+clusterName: {{ clusterName }}
+networking:
+  serviceSubnet: {{ serviceSubnet }}
+  podSubnet: {{ podSubnet }}
+dns:
+  type: CoreDNS
+---
+# We are making kube-proxy fail because we want to use kube-router
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+clientConnection:
+  kubeconfig: invalid-kubeconfig.conf

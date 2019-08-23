@@ -1,0 +1,10 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: JoinConfiguration
+nodeRegistration:
+  name: {{ inventory_hostname }}
+discovery:
+  bootstrapToken: 
+    token: {{ kubeadm_token.stdout_lines[0] }}
+    apiServerEndpoint: {{ groups['init-master'][0] }}:6443
+    unsafeSkipCAVerification: true # TODO: figure out how to get the caCertHash

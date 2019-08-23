@@ -1,0 +1,20 @@
+- hosts: init-master
+  remote_user: root
+  vars:
+    kubeadm_role: init
+  roles:
+    - node
+
+- hosts: masters
+  remote_user: root
+  vars:
+    kubeadm_role: control-plane
+  roles:
+    - node
+
+- hosts: workers
+  remote_user: root
+  vars:
+    kubeadm_role: worker
+  roles:
+    - node
