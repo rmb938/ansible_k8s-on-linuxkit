@@ -47,7 +47,7 @@ If you want to customize the kubeadm configuration or change the CNI fork this r
 
 ## TODO
 
-- [ ] Allow a DNS record to be given for the control plane
+- [X] Allow a DNS record to be given for the control plane
   * When it is given add it to the correct certificates
 - [ ] Figure out a way to get `caCertHashes` so nodes can join securely
 - [ ] Allow nodes to join with taints and labels
