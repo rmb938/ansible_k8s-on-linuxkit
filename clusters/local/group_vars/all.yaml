@@ -1,9 +1,12 @@
-ansible_port: 2222 
+# Required ansible configuration
 ansible_python_interpreter: "/usr/bin/python3"
-ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
 ansible_shell_executable: "ctr --namespace services.linuxkit tasks exec --exec-id ansible-kubelet kubelet sh"
+
+# Optional ansible configuration
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
 
 # Actual vars start here
 clusterName: local
 podSubnet: 100.97.0.0/16
 serviceSubnet: 100.96.0.0/16
+controlPlaneEndpoint: "192.168.122.178"

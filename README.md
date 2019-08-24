@@ -29,13 +29,21 @@ The subnet pod IPs come from
 
 The subnet service IPs come from
 
+### `controlPlaneEndpoint`
+
+This is the control plane endpoint. This should point to a LoadBalancer with all the control plane nodes listening on port 6443. When setting this variable do not include a port.
+
+If you don't have a load balancer this can simply be the `init-master` node however you shouldn't do this in production.
+
 ## Usage
+
+This playbook uses [kube-router](https://github.com/cloudnativelabs/kube-router) as the CNI.
 
 1. Create a cluster inside of the `clusters` folder.
   * Use the `local` cluster as an example
 1. Run `ansible-playbook -i clusters/${your_cluster}/hosts site.yaml --verbose`
 
-If you want to customize the kubeadm configuration fork this repo and modify it as needed.
+If you want to customize the kubeadm configuration or change the CNI fork this repo and modify it as needed.
 
 ## TODO
 

@@ -4,6 +4,7 @@
     kubeadm_role: init
   roles:
     - node
+    - init
 
 - hosts: masters
   remote_user: root

@@ -5,6 +5,6 @@ nodeRegistration:
   name: {{ inventory_hostname }}
 discovery:
   bootstrapToken: 
-    token: {{ kubeadm_token.stdout_lines[0] }}
-    apiServerEndpoint: {{ groups['init-master'][0] }}:6443
+    token: {{ hostvars[groups['init-master'][0]]['kubeadm_token'] }}
+    apiServerEndpoint: {{ controlPlaneEndpoint }}:6443
     unsafeSkipCAVerification: true # TODO: figure out how to get the caCertHash

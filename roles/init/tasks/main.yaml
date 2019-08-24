@@ -1,0 +1,40 @@
+- name: REMOVING KUBE-PROXY DAEMONSET
+  command: "/usr/local/bin/kubectl delete daemonset -n kube-system kube-proxy"
+  register: kubeproxy
+  changed_when: '"deleted" in kubeproxy.stdout'
+  failed_when: '"NotFound" not in kubeproxy.stderr and kubeproxy.stderr|length > 0'
+
+- name: PLACING CNI
+  template:
+    src: "cni.yaml"
+    dest: /etc/kubernetes/cni.yaml
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: APPLY THE CNI
+  command: "/usr/local/bin/kubectl apply -f /etc/kubernetes/cni.yaml"
+  register: kuberouter
+  changed_when: '"created" in kuberouter.stdout or "configured" in kuberouter.stdout'
+
+- name: UPLOAD KUBEADM CERTS FOR CONTROL PLANE
+  command: "/usr/local/bin/kubeadm init phase upload-certs --upload-certs"
+  no_log: true
+  changed_when: false
+  register: kubeadm_certs_cmd
+
+- name: SET KUBEADM CERT KEY
+  set_fact:
+    kubeadm_certkey: "{{ kubeadm_certs_cmd.stdout_lines[2] }}"
+  no_log: true
+
+- name: CREATE TOKEN FOR NODE TO JOIN CLUSTER
+  command: "/usr/local/bin/kubeadm token create --ttl 1h"
+  no_log: true
+  register: kubeadm_token_cmd
+  changed_when: false
+
+- name: SET KUBEADM TOKEN
+  set_fact:
+    kubeadm_token: "{{ kubeadm_token_cmd.stdout_lines[0] }}"
+  no_log: true

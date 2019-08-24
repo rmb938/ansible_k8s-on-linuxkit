@@ -13,6 +13,7 @@ networking:
   podSubnet: {{ podSubnet }}
 dns:
   type: CoreDNS
+controlPlaneEndpoint: "{{ controlPlaneEndpoint }}:6443"
 ---
 # We are making kube-proxy fail because we want to use kube-router
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
