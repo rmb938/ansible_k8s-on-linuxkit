@@ -40,7 +40,7 @@ If you don't have a load balancer this can simply be the `init-master` node howe
 This playbook uses [kube-router](https://github.com/cloudnativelabs/kube-router) as the CNI.
 
 1. Create a cluster inside of the `clusters` folder.
-  * Use the `local` cluster as an example
+    * Use the `local` cluster as an example
 1. Run `ansible-playbook -i clusters/${your_cluster}/hosts site.yaml --verbose`
 
 If you want to customize the kubeadm configuration or change the CNI fork this repo and modify it as needed.
