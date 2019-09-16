@@ -14,7 +14,7 @@
 
 - name: TELLING KUBEADM TO RUN
   copy:
-    content: ""
+    content: "{{ kubeadm_cmd }}"
     dest: /run/kubeadm-run
     force: no
     owner: root

@@ -1,0 +1,12 @@
+# Required ansible configuration
+ansible_python_interpreter: "/usr/bin/python3"
+ansible_shell_executable: "ctr --namespace services.linuxkit tasks exec --exec-id ansible-kubelet kubelet sh"
+
+# Optional ansible configuration
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+
+# Actual vars start here
+clusterName: kube0
+podSubnet: 100.97.0.0/16
+serviceSubnet: 100.96.0.0/16
+controlPlaneEndpoint: "kube0.kubernetes.rmb938.me"

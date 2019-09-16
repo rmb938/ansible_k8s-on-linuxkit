@@ -2,6 +2,7 @@
   remote_user: root
   vars:
     kubeadm_role: init
+    kubeadm_cmd: init
   roles:
     - node
     - init
@@ -10,6 +11,7 @@
   remote_user: root
   vars:
     kubeadm_role: control-plane
+    kubeadm_cmd: join
   roles:
     - node
 
@@ -17,5 +19,6 @@
   remote_user: root
   vars:
     kubeadm_role: worker
+    kubeadm_cmd: join
   roles:
     - node
